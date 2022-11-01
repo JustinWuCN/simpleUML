@@ -1,0 +1,74 @@
+#!/bin/bash
+
+#Justin.如果搜索时要加正则表达式行首,需要写\\\<.连写三个"\",第一个和第三个是转义,说明要传"\"和"<"进去.
+
+num=$#
+
+findAll=0;
+
+nomal_opts_act() 
+{ 
+#  echo -e "\n### nomal_opts_act ###\n" 
+  
+  while [ -n "$1" ] 
+  do 
+  case "$1" in 
+    -a) 
+      echo "Found the -a option" 
+      findAll=1
+      num=$(( num-1 ));
+      ;; 
+    -b) 
+      echo "Found the -b option" 
+      echo "The parameter follow -b is $2" 
+      shift 
+      ;; 
+    -c) 
+      echo "Found the -c option" 
+      echo "The parameter follow -c is $2" 
+      shift 
+      ;; 
+    -d) 
+      echo "Found the -d option" 
+      ;; 
+     *) 
+#       echo "$1 is not an option" 
+      ;; 
+  esac 
+  shift 
+  done 
+} 
+
+nomal_opts_act $@
+
+
+if (( $num == 2 ))
+then
+#	find . -name $2 | xargs grep --color=auto $1 -nr
+#	grep --color=auto -r -i $1 $2
+#find -type f -iname "*${2}*" | perl -ne 'chomp;print "$_\n" if -T $_' | xargs grep --color=auto "$1" -nri
+
+    if (( $findAll == 1))
+    then
+        find -iname "*${2}*" | cat | grep --color=auto "$1" -nri
+    else
+        find . -type f -iname  "*${2}*" -print0 |xargs -0 file|grep 'ASCII\|UTF\|ISO-8859' | awk '{print $1}'|tr -d ':' | xargs grep --color=auto "$1" -nri
+    fi
+
+elif (( $num == 1 ))
+then
+	#find . | xargs grep $1 -nr
+    #grep --color=auto -nri "$1" ./
+#find . -type f | perl -ne 'chomp;print "$_\n" if -T $_' | xargs grep --color=auto "$1" -nri
+    if (( $findAll == 1))
+    then
+#find . -type f | xargs grep --color=auto "$1" -nri
+	    find . -type f | cat | grep --color=auto "$1" -nri
+    else
+        find . -type f -print0 | xargs -0 file | grep 'ASCII\|UTF\|ISO-8859' | awk '{print $1}'|tr -d ':' | xargs grep --color=auto "$1" -nri
+    fi
+else
+	echo "need argment..."
+fi
+
+#grep --color=auto -nr $1 ./

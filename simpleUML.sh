@@ -3,8 +3,6 @@
 # 需要先进入live555/liveMedia目录下
 
 #1. 找出所有的类定义.
-# find.word是自己写的一个脚本,里面只有一句
-# find . -type f -iname  "*${2}*" -print0 |xargs -0 file|grep 'ASCII\|UTF\|ISO-8859' | awk '{print $1}'|tr -d ':' | xargs grep --color=auto "$1" -nri
 #TODO, 这里只处理了大括号与类定义在同一行的情况,如果要处理其他情况,需要另外处理.
 #有的类定义大括号与类定义分为二行
 #  class subclass : public xxxx
@@ -14,9 +12,11 @@
 #	: public xxxx {
 
 
-find.word "\<class.*{" > live555
+find.word "\<class.*{" .hh > live555
 
 # 2. 取出类名
+# TODO: 如果要做到通用,上面所说的另外二种类定义法需要处理
+# TODO: 如果存在多继承.此法不可行.
 cat live555 | sed -e 's/.*class \(.*\){/\1/' > classonly2
 
 #3. 把类关系的描述替换为 <|-- 方式.
