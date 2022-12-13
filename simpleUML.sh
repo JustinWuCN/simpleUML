@@ -25,11 +25,11 @@ cat classonly2 | sed -e 's/\(.*\): public \(.*\)/\2 <|-- \1/' > classDiagram
 
 
 #4. 去掉没有继承关系的类
-cat classDiagram | grep "<|--" >> classDiagram2
+cat classDiagram | grep "<|--" > classDiagram2
 
 #5. 把类内包含的类继承去掉.这一步是因为mermaid不能处理类内继承,如果使用plantuml,可以不必处理.
 #这里有必个子类的继承,里面有"::"字符.在mermaid里处理会出错.先把这几个过滤掉
-cat classDiagram2 | grep -Ev "::" >> classDiagram3
+cat classDiagram2 | grep -Ev "::" > classDiagram3
 
 ## 把上面得到的最终文件classDiagram3的内容,放到mermaid里去.
 ## 前面加上二句
